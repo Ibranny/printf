@@ -1,25 +1,30 @@
 #include "main.h"
 
 /**
- * print_address - prints address of input in hexa format
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: number of char printed
+ * get_precision - gets the precision from the format string
+ * @p: the format string
+ * @params: the parameters struct
+ * @ap: the argument pointer
+ *
+ * Return: new pointer
  */
-int print_address(va_list l, flags_t *f)
+char *get_precision(char *p, params_t *params, va_list ap)
 {
-	char *str;
-	unsigned long int p = va_arg(l, unsigned long int);
+	int d = 0;
 
-	register int count = 0;
-
-	(void)f;
-
-	if (!p)
-		return (_puts("(nil)"));
-	str = convert(p, 16, 1);
-	count += _puts("0x");
-	count += _puts(str);
-	return (count);
+	if (*p != '.')
+		return (p);
+	p++;
+	if (*p == '*')
+	{
+		d = va_arg(ap, int);
+		p++;
+	}
+	else
+	{
+		while (_isdigit(*p))
+			d = d * 10 + (*p++ - '0');
+	}
+	params->precision = d;
+	return (p);
 }
